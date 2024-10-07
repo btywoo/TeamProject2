@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.kh.app.dao.DiscussionDAO">
+	<select id="selectDiscussionList" resultType="DiscussionRoomVO">
+		select discussion_room.*, count(co_dr_num) as commentCount 
+		from discussion_room
+		left join comment on co_dr_num = dr_num
+		group by dr_num
+		order by dr_num;
+	</select>
+	
+	<insert id="insertComment">
+		insert into comment(co_content, co_me_id, co_dr_num)
+		values(#{co.co_content}, #{co.co_me_id}, #{co.co_dr_num})
+	</insert>
+	
+	<select id="selectDiscussionRoom" resultType="DiscussionRoomVO">
+		select * from discussion_room where dr_num = #{dr_num};
+	</select>
+	
+	<select id="selectCommentList" resultType="CommentVO">
+		SELECT 
+		    comment.*, 
+		    (select te_result from test where te_me_id = me_id and te_result is not null order by te_date desc limit 1) as co_te_result
+		FROM
+		    comment
+			left JOIN member ON me_id = co_me_id
+		    left join test on te_me_id = me_id
+		where co_dr_num = #{dr.dr_num}
+		group by co_num
+		order by co_num;
+	</select>
+	
+	<delete id="deleteComment">
+		delete from comment where co_num = #{co.co_num};
+	</delete>
+</mapper>

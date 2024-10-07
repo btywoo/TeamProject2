@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.kh.app.dao.TestDAO">
+	<insert id="insertTest" keyProperty="te.te_num" useGeneratedKeys="true">
+		insert into test(te_me_id) values(#{te.te_me_id});
+	</insert>
+	
+	<select id="selectQuestionTotalCount" resultType="int">
+		select count(*) from question;
+	</select>
+	
+	<select id="selectQuestionList" resultType="QuestionVO">
+		select * from question order by qu_num limit #{cri.pageStart}, #{cri.perPageNum};
+	</select>
+	
+	<insert id="insertQuestionAnswer">
+		insert into question_answer(qa_answer, qa_te_num, qa_qu_num)
+		values(#{qa_answer}, #{qa_te_num}, #{qa_qu_num});
+	</insert>
+	
+	<select id="selectQuestionAnswerSum" resultType="int">
+		select sum(qa_answer) from question_answer 
+		join question on qu_num = qa_qu_num 
+		where qa_te_num = #{qa_te_num} and qu_type = #{qu_type};
+	</select>
+	
+	<select id="selectTest" resultType="TestVO">
+		select * from test where te_num = #{te_num};
+	</select>
+	
+	<update id="updateTestResult">
+		update test set te_result = #{te.te_result} where te_num = #{te.te_num};
+	</update>
+	
+<<<<<<< HEAD
+	<select id="selectResult" resultType="PerTypeVO">
+		select pt_content from personality_type where pt_code = #{test.te_result};
+	</select>
+	
+=======
+	<select id="selectResult" resultType="Personality_typeVO">
+		select * from personality_type where pt_code = #{te.te_result};
+	</select>
+>>>>>>> main
+</mapper>
